@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        label, input {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Predict Iris Species</h1>
+        <form id="predictForm">
+            <label for="sepal_length">Sepal Length:</label>
+            <input type="text" id="sepal_length" name="sepal_length"><br>
+            <label for="sepal_width">Sepal Width:</label>
+            <input type="text" id="sepal_width" name="sepal_width"><br>
+            <label for="petal_length">Petal Length:</label>
+            <input type="text" id="petal_length" name="petal_length"><br>
+            <label for="petal_width">Petal Width:</label>
+            <input type="text" id="petal_width" name="petal_width"><br>
+            <button type="button" onclick="makePrediction()">Predict</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function makePrediction() {
+            const data = {
+                sepal_length: parseFloat(document.getElementById('sepal_length').value),
+                sepal_width: parseFloat(document.getElementById('sepal_width').value),
+                petal_length: parseFloat(document.getElementById('petal_length').value),
+                petal_width: parseFloat(document.getElementById('petal_width').value)
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                const species = ["Setosa", "Versicolor", "Virginica"];
+                const prediction = species[result[0]];
+                document.getElementById('result').innerText = `Prediction: ${prediction}`;
+            } catch (error) {
+                document.getElementById('result').innerText = `Error: ${error}`;
+            }
+        }
+    </script>
+</body>
+</html>
